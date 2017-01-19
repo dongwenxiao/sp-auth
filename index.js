@@ -1,5 +1,5 @@
-import createRouter from './src/server/router'
+import spAuth from './src/spAuth'
 
 export {
-    createRouter
+    spAuth
 }

@@ -18,8 +18,12 @@ export const Struct = {
 
 export class User {
 
-    constructor() {
-
+    constructor(opt) {
+        
+        // mongodb 数据库连接信息
+        this.ip = opt.ip
+        this.port = opt.port
+        this.db = opt.db
     }
 
     register(data) {
@@ -29,7 +33,7 @@ export class User {
         if (data.type === REGISTER_TYPE.wx) {} // URL跳转
 
 
-        
+
 
     }
 
