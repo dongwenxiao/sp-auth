@@ -10,7 +10,7 @@ export default class spApi {
      * 
      * @memberOf ApiFactory
      */
-    constructor(opt, router) {
+    constructor(opt, router, middleware) {
 
         // 维护当前的路由列表
         this.collections = []
@@ -29,13 +29,27 @@ export default class spApi {
         // 当前auth路由
         this.router = new Router()
 
+        this.rootMiddleware = middleware
+
+        this.init()
+    }
+
+    init() {
         // 实例化数据库连接对象
         this.dao = new spMongoDB({ ip: this.ip, port: this.port, db: this.db })
+
+        // handbars 模板注册
+        const views = require('koa-views')
+        this.rootMiddleware.use(views(__dirname + '/views', {
+            extension: 'ejs',
+            map: {
+                hbs: 'ejs'
+            }
+        }))
     }
 
     /**
      * 挂载到主路由上
-     * 
      * 
      * @memberOf ApiFactory
      */
@@ -53,7 +67,7 @@ export default class spApi {
     addApi() {
         this.router
             .get('/register', async(ctx) => {
-                ctx.body = 'rrrr'
+                return ctx.render('home', { name: 'victor' })
             })
             .post('/register', async(ctx) => {
 
