@@ -70,8 +70,31 @@ export default class spApi {
             .post('/forgot', async(ctx) => {
 
             })
-            .get('/auth', async(ctx) => {
+            .get('/role', async(ctx) => {
 
+                // 注册的路由
+                let registerRoutes = []
+
+                // 二次封装
+                this.rootRouter.root.stack
+                    .filter((r) => r.methods.length > 0)
+                    .forEach((r) => {
+                        r.methods.forEach((m) => {
+                            registerRoutes.push({
+                                method: m,
+                                path: r.path
+                            })
+                        })
+                    })
+
+                // 过滤掉其他
+                registerRoutes = registerRoutes.filter((r) => {
+                    let m = r.method.toUpperCase()
+                    return !(m === 'HEAD' || m === 'OPTIONS')
+                })
+
+
+                ctx.body = registerRoutes.map((r) => (`<div>${r.method} - ${r.path}</div>`)).join('')
             })
     }
 
