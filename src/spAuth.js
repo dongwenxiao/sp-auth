@@ -1,5 +1,7 @@
 import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
+import { createRouter as createRouter } from './server/router'
+
 
 export default class spApi {
     /**
@@ -26,21 +28,23 @@ export default class spApi {
         // koa 路由，主要使用 .use() 挂载
         this.rootRouter = router
 
-        // 当前auth路由
-        this.router = new Router()
-
+        // koa 中间件挂载
         this.rootMiddleware = middleware
 
         this.init()
     }
 
     init() {
+
+        // 当前auth路由
+        this.router = createRouter(this.rootRouter, this.dao)
+
         // 实例化数据库连接对象
         this.dao = new spMongoDB({ ip: this.ip, port: this.port, db: this.db })
 
         // handbars 模板注册
         const views = require('koa-views')
-        this.rootMiddleware.use(views(__dirname + '/views', {
+        this.rootMiddleware.use(views(__dirname + '/server/views', {
             extension: 'ejs',
             map: {
                 hbs: 'ejs'
@@ -55,62 +59,12 @@ export default class spApi {
      */
     mount() {
 
-        // 先挂载自身接口
-        this.addApi()
-
         // 挂载prefix路由
         const apiRouter = new Router()
         apiRouter.use(this.urlPrefix, this.router.routes(), this.router.allowedMethods())
         this.rootRouter.use(apiRouter)
     }
 
-    addApi() {
-        this.router
-            .get('/register', async(ctx) => {
-                return ctx.render('home', { name: 'victor' })
-            })
-            .post('/register', async(ctx) => {
-
-            })
-            .get('/login', async(ctx) => {
-
-            })
-            .post('/login', async(ctx) => {
-
-            })
-            .get('/forgot', async(ctx) => {
-
-            })
-            .post('/forgot', async(ctx) => {
-
-            })
-            .get('/role', async(ctx) => {
-
-                // 注册的路由
-                let registerRoutes = []
-
-                // 二次封装
-                this.rootRouter.root.stack
-                    .filter((r) => r.methods.length > 0)
-                    .forEach((r) => {
-                        r.methods.forEach((m) => {
-                            registerRoutes.push({
-                                method: m,
-                                path: r.path
-                            })
-                        })
-                    })
-
-                // 过滤掉其他
-                registerRoutes = registerRoutes.filter((r) => {
-                    let m = r.method.toUpperCase()
-                    return !(m === 'HEAD' || m === 'OPTIONS')
-                })
-
-
-                ctx.body = registerRoutes.map((r) => (`<div>${r.method} - ${r.path}</div>`)).join('')
-            })
-    }
 
     response(code, data, msg, type = 'json') {
         if (type === 'json') {

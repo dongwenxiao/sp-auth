@@ -1,0 +1,74 @@
+<% include partial/header.ejs %>
+
+
+
+<h2>角色列表</h2>
+<div>
+    <input type="text" id="txtRoleName">
+    <button id="btnAddRole">添加</button><button>删除</button><button>更新</button>
+</div>
+
+<select name="" id="" multiple="multiple">
+<% for(var i=0; i<roles.length; i++) { 
+    var role = roles[i]
+%>
+    <option value="<%= role %>"><%= role %></option>
+<% } %>
+</select>
+
+<hr>
+
+<h2>接口列表</h2>
+
+<div>
+    <button>全选 / 全取消</button> 
+</div>
+
+<% for(var i=0; i<routes.length; i++) { 
+    var route = routes[i]
+    var id = `chk_${route.path}_${route.method}`
+%>
+
+<div>
+    <input id="<%= id %>" type="checkbox" name="role-path"> | 
+    <label for="<%= id %>"><%= route.method %> - <%= route.path %></label>
+</div>
+
+<% } %>
+
+
+<% include partial/footer.ejs %>
+
+<script>
+
+$(function(){
+    initRoleAddButton();
+});
+
+
+function initRoleAddButton(){
+    $("#btnAddRole").click(function(e){
+        var roleName = $("#txtRoleName").val();
+        addRole({roleName: roleName}, function(res){
+            console.log(res);
+        });
+    })
+
+    function addRole(data, callback) {
+        $.ajax({
+            url: '/auth/role',
+            type: 'post',
+            data: data,
+            success: function(res){
+                callback && callback(res)
+            },
+            error: function(err){
+                alert('ajax err');
+                console.log(err);
+            }
+        });
+    }
+}
+
+
+</script>

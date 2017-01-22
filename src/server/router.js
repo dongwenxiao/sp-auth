@@ -1,12 +1,13 @@
 import Router from 'koa-router'
+// import { User, Role} from './model'
 
-export default function createRouter(perfix = '/auth') {
+const createRouter = (rootRouter, dao) => {
 
-    const authRouter = new Router()
+    const router = new Router()
 
-    authRouter
+    router
         .get('/register', async(ctx) => {
-            ctx.body = 'rrrr'
+            // return ctx.render('home', { name: 'victor' })
         })
         .post('/register', async(ctx) => {
 
@@ -23,13 +24,48 @@ export default function createRouter(perfix = '/auth') {
         .post('/forgot', async(ctx) => {
 
         })
-        .get('/auth', async(ctx) => {
-            
+        .get('/role', async(ctx) => {
+
+            // const roleInstance = new Role({
+
+            // })
+
+            // 注册的路由
+            let registerRoutes = []
+
+            // 二次封装
+            rootRouter.root.stack
+                .filter((r) => r.methods.length > 0)
+                .forEach((r) => {
+                    r.methods.forEach((m) => {
+                        registerRoutes.push({
+                            method: m,
+                            path: r.path
+                        })
+                    })
+                })
+
+            // 过滤掉其他
+            registerRoutes = registerRoutes.filter((r) => {
+                let m = r.method.toUpperCase()
+                return !(m === 'HEAD' || m === 'OPTIONS')
+            })
+
+            return ctx.render('role', {
+                routes: registerRoutes,
+                roles: ['role1', 'role2']
+            })
+
+            // ctx.body = registerRoutes.map((r) => (`<div>${r.method} - ${r.path}</div>`)).join('')
+        })
+        .post('/role', async(ctx) => {
+
+            console.log(ctx)
+            ctx.body = 'ok'
         })
 
-    // 整体挂载路由前缀
-    const prefixRouter = new Router()
-    prefixRouter.use(perfix, authRouter.routes(), authRouter.allowedMethods())
-
-    return prefixRouter
+    return router
 }
+
+
+export { createRouter }
