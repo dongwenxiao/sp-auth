@@ -58,9 +58,13 @@ const createRouter = (rootRouter, dao) => {
 
             // ctx.body = registerRoutes.map((r) => (`<div>${r.method} - ${r.path}</div>`)).join('')
         })
-        .post('/role', async(ctx) => {
+        .post('/role', require('koa-bodyparser')(), async(ctx) => {
 
-            console.log(ctx)
+            let name = ctx.request.body.roleName
+            let apis = ctx.request.body.apis
+
+            
+            
             ctx.body = 'ok'
         })
 
