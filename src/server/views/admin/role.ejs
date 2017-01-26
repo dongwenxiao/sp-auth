@@ -1,0 +1,131 @@
+<% include ../partial/header.ejs %>
+
+
+
+<h2>角色列表</h2>
+<div>
+    <input type="text" id="txtRoleName">
+    <button id="btnAddRole">添加</button>
+</div>
+
+<hr>
+<h2>权限更新</h2>
+
+<select name="" id="selectRoleList" multiple="multiple">
+<% for(var i=0; i<roles.length; i++) { 
+    var role = roles[i]
+%>
+    <option value="<%= role %>"><%= role %></option>
+<% } %>
+</select>
+
+<button>删除</button><button>更新</button>
+
+<hr>
+
+<h2>接口列表</h2>
+
+<div>
+    <button>全选 / 全取消</button> 
+</div>
+
+<% for(var i=0; i<routes.length; i++) { 
+    var route = routes[i]
+    var id = `chk_${route.path}_${route.method}`
+%>
+
+<div>
+    <input id="<%= id %>" type="checkbox" name="role-path"> | 
+    <label for="<%= id %>"><%= route.method %> - <%= route.path %></label>
+</div>
+
+<% } %>
+
+
+<% include ../partial/footer.ejs %>
+
+<script>
+
+$(function(){
+    initRoleAddButton();
+    renderRoleSelect();
+});
+
+
+function initRoleAddButton(){
+    $("#btnAddRole").click(function(e){
+        var roleName = $("#txtRoleName").val();
+        addRole({name: roleName, apis: []}, function(res){
+            if(res.code === 200){
+                alert('Success')
+            }else{
+                alert(res.data.msg)
+            }
+            console.log(res);
+        });
+    })
+
+    function addRole(data, callback) {
+        $.ajax({
+            url: '/auth/admin/role_add',
+            type: 'post',
+            data: data,
+            success: function(res){
+                callback && callback(res)
+            },
+            error: function(err){
+                alert('ajax err');
+                console.log(err);
+            }
+        });
+    }
+}
+
+function renderRoleSelect() {
+    getAllRoles(function(res){
+        if(res.code === 200){
+            $('#selectRoleList').html('');
+            res.data.forEach(function(role){
+                var $option = $('<option>').html(role.name).attr('data-id', role._id);
+                $('#selectRoleList').append($option);
+            })
+        }
+    })
+}
+
+function getRoles(id, callback){
+    $.ajax({
+        url: '/auth/admin/role_get',
+        type: 'get',
+        success: function(res){
+            callback && callback(res)
+        },
+        error: function(err){
+            alert('ajax err');
+            console.log(err);
+        }
+    })
+}
+function getRole(id, callback){
+    getRoles(id, callback)
+}
+function getAllRoles(callback){
+    getRoles(undefined, callback)
+}
+
+function getCheckedApis(){
+    
+    var mapping = {};
+    var $checkboxs = $("input[name=role-path]");
+    $.each($checkboxs, function(i, checkbox){
+        var $checkbox = $(checkbox);
+        var status = $checkbox.prop("checked");
+
+        mapping[$checkbox.attr("id")] = status;
+    });
+
+    return mapping;
+}
+
+
+</script>

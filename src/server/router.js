@@ -1,7 +1,8 @@
 import Router from 'koa-router'
+import Role from './models/Role'
 // import { User, Role} from './model'
 
-const createRouter = (rootRouter, dao) => {
+const createRouter = (rootRouter) => {
 
     const router = new Router()
 
@@ -24,7 +25,7 @@ const createRouter = (rootRouter, dao) => {
         .post('/forgot', async(ctx) => {
 
         })
-        .get('/role', async(ctx) => {
+        .get('/admin/role', async(ctx) => {
 
             // const roleInstance = new Role({
 
@@ -51,22 +52,68 @@ const createRouter = (rootRouter, dao) => {
                 return !(m === 'HEAD' || m === 'OPTIONS')
             })
 
-            return ctx.render('role', {
+            return ctx.render('admin/role', {
                 routes: registerRoutes,
                 roles: ['role1', 'role2']
             })
-
-            // ctx.body = registerRoutes.map((r) => (`<div>${r.method} - ${r.path}</div>`)).join('')
         })
-        .post('/role', require('koa-bodyparser')(), async(ctx) => {
 
-            let name = ctx.request.body.roleName
+
+        .get('/admin/role_get', async(ctx) => {
+            var _id = ctx.query.id
+            let roles = []
+            if (_id) {
+                // 查找某一个角色
+                roles = await Role.get({ _query: { _id } })
+            } else {
+                // 查找全部角色
+                roles = await Role.get()
+            }
+
+            ctx.body = {
+                code: 200,
+                data: roles
+            }
+
+        })
+        .post('/admin/role_add', async(ctx) => {
+
+            let name = ctx.request.body.name
             let apis = ctx.request.body.apis
 
-            
-            
-            ctx.body = 'ok'
+            // 不能添加相同的角色名
+
+            const roles = await Role.get({ _query: { name } })
+            if (roles.length === 0) {
+                const role = new Role({ name, apis })
+                const result = await Role.add(role)
+
+                ctx.body = {
+                    code: 200,
+                    data: result
+                }
+            } else {
+                ctx.body = {
+                    code: 500,
+                    data: {
+                        msg: 'Fail: Role name existed.'
+                    }
+                }
+            }
+
+
+
+
+
         })
+        .put('/admin/role_update', async(ctx) => {
+
+        })
+        .delete('/admin/role_delete', async(ctx) => {
+
+        })
+
+
 
     return router
 }

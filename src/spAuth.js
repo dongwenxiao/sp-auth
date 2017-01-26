@@ -1,6 +1,9 @@
 import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
 import { createRouter as createRouter } from './server/router'
+import Model from './server/models/Model'
+import Role from './server/models/Role'
+import User from './server/models/User'
 
 
 export default class spApi {
@@ -36,11 +39,18 @@ export default class spApi {
 
     init() {
 
-        // 当前auth路由
-        this.router = createRouter(this.rootRouter, this.dao)
-
+        
         // 实例化数据库连接对象
         this.dao = new spMongoDB({ ip: this.ip, port: this.port, db: this.db })
+
+        // 当前auth路由
+        this.router = createRouter(this.rootRouter)
+
+        // 配置数据库连接对象和表名
+        Role.configDAO(this.dao)
+        Role.configCollection('role')
+        User.configDAO(this.dao)
+        Role.configCollection('user')
 
         // handbars 模板注册
         const views = require('koa-views')
