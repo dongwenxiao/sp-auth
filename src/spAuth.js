@@ -50,7 +50,7 @@ export default class spApi {
         Role.configDAO(this.dao)
         Role.configCollection('role')
         User.configDAO(this.dao)
-        Role.configCollection('user')
+        User.configCollection('user')
 
         // handbars 模板注册
         const views = require('koa-views')

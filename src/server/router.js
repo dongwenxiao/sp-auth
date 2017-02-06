@@ -59,7 +59,7 @@ const createRouter = (rootRouter) => {
         })
 
 
-        .get('/admin/role_get', async(ctx) => {
+    .get('/admin/role_get', async(ctx) => {
             var _id = ctx.query.id
             let roles = []
             if (_id) {
@@ -101,15 +101,41 @@ const createRouter = (rootRouter) => {
                 }
             }
 
-
-
-
-
         })
         .put('/admin/role_update', async(ctx) => {
+            let _id = ctx.request.body.id
+            let name = ctx.request.body.name
+            let apis = ctx.request.body.apis
+
+            const roles = await Role.get({ _query: { name } })
+
+            if (roles.length === 0 || roles[0].name === name) {
+                const role = new Role({ name, apis })
+                const result = await Role.update({ _id }, role)
+
+                ctx.body = {
+                    code: 200,
+                    data: result
+                }
+            } else {
+                ctx.body = {
+                    code: 500,
+                    data: {
+                        msg: 'Fail: Role name existed.'
+                    }
+                }
+            }
 
         })
         .delete('/admin/role_delete', async(ctx) => {
+            let _id = ctx.request.body.id
+
+            const result = await Role.delete({ _id })
+
+            ctx.body = {
+                code: 200,
+                data: result
+            }
 
         })
 
