@@ -1,10 +1,10 @@
 import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
 import { createRouter as createRouter } from './server/router'
+import authMiddlewareCreate from './authMiddlewareCreate'
 import Model from './server/models/Model'
 import Role from './server/models/Role'
 import User from './server/models/User'
-
 
 export default class spApi {
     /**
@@ -39,7 +39,7 @@ export default class spApi {
 
     init() {
 
-        
+
         // 实例化数据库连接对象
         this.dao = new spMongoDB({ ip: this.ip, port: this.port, db: this.db })
 
@@ -70,9 +70,17 @@ export default class spApi {
     mount() {
 
         // 挂载prefix路由
+
         const apiRouter = new Router()
         apiRouter.use(this.urlPrefix, this.router.routes(), this.router.allowedMethods())
         this.rootRouter.use(apiRouter)
+
+        // 挂载权限校验中间件
+
+        const rootRouter = this.rootRouter.root
+        const authMiddleware = authMiddlewareCreate(rootRouter)
+        this.rootMiddleware.use(authMiddleware)
+
     }
 
 
