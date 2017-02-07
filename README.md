@@ -28,3 +28,8 @@ Custom \ User
 
 具体用户 \ IP
 
+
+
+从 session 中获取 role
+
+从 db 中获取 role-mapping-api
