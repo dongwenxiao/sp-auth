@@ -26,7 +26,7 @@
 <h2>角色可访问接口列表</h2>
 
 <div>
-    <button>全选 / 全取消</button> 
+    <button id="btnAllToggle">全选 / 全取消</button> 
 </div>
 
 <% for(var i=0; i<routes.length; i++) { 
@@ -52,6 +52,7 @@ $(function(){
     bindRoleSelectEvent();
     bindUpdateButtonEvent();
     bindDeleteButtonEvent();
+    bindAllToggleButtonEvent();
 });
 
 
@@ -238,6 +239,13 @@ function bindDeleteButtonEvent(){
             }
         })
 
+    })
+}
+
+function bindAllToggleButtonEvent(){
+    $("#btnAllToggle").click(function(){
+        var currentStatus = $("input[name=role-path]").eq(0).prop("checked");
+        $("input[name=role-path]").prop("checked", !currentStatus);
     })
 }
 
