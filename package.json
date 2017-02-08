@@ -1,26 +1,26 @@
 {
-  "dependencies": {
-    "sp-model": "~1.0.1"
-  },
-  "name": "sp-auth",
-  "description": "sp-base auth managment",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dongwenxiao/sp-auth.git"
-  },
-  "keywords": [
-    "sp-base",
-    "sp-auth"
-  ],
-  "author": "cs_victor@126.com",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/dongwenxiao/sp-auth/issues"
-  },
-  "homepage": "https://github.com/dongwenxiao/sp-auth#readme"
+    "name": "sp-auth",
+    "description": "sp-base auth managment",
+    "version": "1.0.1",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dongwenxiao/sp-auth.git"
+    },
+    "keywords": [
+        "sp-base",
+        "sp-auth"
+    ],
+    "author": "cs_victor@126.com",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/dongwenxiao/sp-auth/issues"
+    },
+    "homepage": "https://github.com/dongwenxiao/sp-auth#readme",
+    "dependencies": {
+        "sp-model": "~1.0.0"
+    }
 }
