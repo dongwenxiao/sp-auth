@@ -51,7 +51,7 @@ export default function authMiddlewareCreate(rootRouter) {
                         if (role.name === currentUserRole) {
 
                             for (let j = 0; j < role.apis.length; j++) {
-                                let api = role.apis[i]
+                                let api = role.apis[j]
                                 if (api.path === path && api.method === method && eval(api.status)) {
                                     // 当前角色有访问URL的权限
                                     console.log('有权限')

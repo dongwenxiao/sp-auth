@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import Role from './models/Role'
+import _ from 'underscore'
 // import { User, Role} from './model'
 
 const createRouter = (rootRouter) => {
@@ -106,6 +107,9 @@ const createRouter = (rootRouter) => {
             let _id = ctx.request.body.id
             let name = ctx.request.body.name
             let apis = ctx.request.body.apis
+
+            // obj -> array
+            apis = _.values(apis)
 
             const roles = await Role.get({ _query: { name } })
 
