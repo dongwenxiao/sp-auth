@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "sp-model": "~1.0.0"
+    "sp-model": "~1.0.1"
   },
   "name": "sp-auth",
   "description": "sp-base auth managment",
