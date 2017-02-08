@@ -1,5 +1,4 @@
-import Model from './Model'
-
+import Model from 'sp-model'
 
 export default class User extends Model {
 

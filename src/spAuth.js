@@ -2,17 +2,17 @@ import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
 import { createRouter as createRouter } from './server/router'
 import authMiddlewareCreate from './authMiddlewareCreate'
-import Model from './server/models/Model'
 import Role from './server/models/Role'
 import User from './server/models/User'
 
 export default class spApi {
+
     /**
      * Creates an instance of ApiFactory.
-     * 
+     *
      * @param {any} opt {ip: '', port: '', db: '', prefix: ''} 连接mongodb需要的信息
      * @param {any} router 包含 .use() 方法的对象
-     * 
+     *
      * @memberOf ApiFactory
      */
     constructor(opt, router, middleware) {
@@ -64,7 +64,7 @@ export default class spApi {
 
     /**
      * 挂载到主路由上
-     * 
+     *
      * @memberOf ApiFactory
      */
     mount() {
