@@ -11,12 +11,12 @@ export default function authMiddlewareCreate(rootRouter) {
         // 无需权限，直接访问
 
         if (~[
-                '/auth/admin/role',
-                '/auth/admin/role_get',
-                '/auth/admin/role_add',
-                '/auth/admin/role_update',
-                '/auth/admin/role_delete'
-            ].indexOf(url)) {
+            '/auth/admin/role',
+            '/auth/admin/role/get',
+            '/auth/admin/role/add',
+            '/auth/admin/role/update',
+            '/auth/admin/role/delete'
+        ].indexOf(url)) {
             return await next()
         }
 

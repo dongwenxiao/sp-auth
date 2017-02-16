@@ -1,6 +1,6 @@
 import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
-import { createRouter as createRouter } from './server/router'
+import { createRouter } from './server/router'
 import authMiddlewareCreate from './authMiddlewareCreate'
 import Role from './server/models/Role'
 import User from './server/models/User'

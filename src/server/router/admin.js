@@ -1,36 +1,13 @@
-import Router from 'koa-router'
-import Role from './models/Role'
+import Role from '../models/Role'
 import _ from 'underscore'
-// import { User, Role} from './model'
+import Router from 'koa-router'
 
 const createRouter = (rootRouter) => {
 
     const router = new Router()
 
     router
-        .get('/register', async(ctx) => {
-            // return ctx.render('home', { name: 'victor' })
-        })
-        .post('/register', async(ctx) => {
-
-        })
-        .get('/login', async(ctx) => {
-
-        })
-        .post('/login', async(ctx) => {
-
-        })
-        .get('/forgot', async(ctx) => {
-
-        })
-        .post('/forgot', async(ctx) => {
-
-        })
-        .get('/admin/role', async(ctx) => {
-
-            // const roleInstance = new Role({
-
-            // })
+        .get('/role', async(ctx) => {
 
             // 注册的路由
             let registerRoutes = []
@@ -58,10 +35,8 @@ const createRouter = (rootRouter) => {
                 roles: ['role1', 'role2']
             })
         })
-
-
-    .get('/admin/role_get', async(ctx) => {
-            var _id = ctx.query.id
+        .get('/role/get', async(ctx) => {
+            let _id = ctx.query.id
             let roles = []
             if (_id) {
                 // 查找某一个角色
@@ -77,7 +52,7 @@ const createRouter = (rootRouter) => {
             }
 
         })
-        .post('/admin/role_add', async(ctx) => {
+        .post('/role/add', async(ctx) => {
 
             let name = ctx.request.body.name
             let apis = ctx.request.body.apis
@@ -103,7 +78,7 @@ const createRouter = (rootRouter) => {
             }
 
         })
-        .put('/admin/role_update', async(ctx) => {
+        .put('/role/update', async(ctx) => {
             let _id = ctx.request.body.id
             let name = ctx.request.body.name
             let apis = ctx.request.body.apis
@@ -131,7 +106,7 @@ const createRouter = (rootRouter) => {
             }
 
         })
-        .delete('/admin/role_delete', async(ctx) => {
+        .delete('/role/delete', async(ctx) => {
             let _id = ctx.request.body.id
 
             const result = await Role.delete({ _id })
@@ -143,10 +118,10 @@ const createRouter = (rootRouter) => {
 
         })
 
-
-
     return router
 }
 
 
-export { createRouter }
+export {
+    createRouter
+}

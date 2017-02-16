@@ -73,7 +73,7 @@ function initRoleAddButton(){
 
     function addRole(data, callback) {
         $.ajax({
-            url: '/auth/admin/role_add',
+            url: '/auth/admin/role/add',
             type: 'post',
             data: data,
             success: function(res){
@@ -101,7 +101,7 @@ function renderRoleSelect() {
 
 function updateRole(data, callback) {
     $.ajax({
-        url: '/auth/admin/role_update',
+        url: '/auth/admin/role/update',
         type: 'put',
         data: data,
         success: function(res){
@@ -116,7 +116,7 @@ function updateRole(data, callback) {
 
 function deleteRole(id, callback){
     $.ajax({
-        url: '/auth/admin/role_delete',
+        url: '/auth/admin/role/delete',
         type: 'delete',
         data: {
             id: id
@@ -133,7 +133,7 @@ function deleteRole(id, callback){
 
 function getRoles(id, callback){
     $.ajax({
-        url: '/auth/admin/role_get',
+        url: '/auth/admin/role/get',
         type: 'get',
         data: {
             id: id
