@@ -54,5 +54,36 @@ export default class User extends Model {
         return await this.login({ phone }, password)
     }
 
+    static async registerByEmail(user) {
+
+        // 已存在用户
+        let users = await this.get({ _query: { email: user.email } })
+        if (users.length > 0) {
+            return false
+        }
+
+        // 添加用户
+        const handle = await this.add(user)
+        if (handle.result.ok) {
+            return handle.ops[0]
+        }
+        return false
+
+    }
+
+    static async registerByUsername(user) {
+        // 已存在用户
+        let users = await this.get({ _query: { username: user.username } })
+        if (users.length > 0) {
+            return false
+        }
+
+        // 添加用户
+        const handle = await this.add(user)
+        if (handle.result.ok) {
+            return handle.ops[0]
+        }
+        return false
+    }
 
 }

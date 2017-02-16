@@ -13,18 +13,55 @@ const createRouter = (rootRouter) => {
     router
         .get('/register', async(ctx) => {
 
-            var ss = ctx.spResponse(200, { a: 1 }, 'sss')
+            // var ss = ctx.spResponse(200, { a: 1 }, 'sss')
 
-            console.log(ss)
-            ctx.body = ss
+            // console.log(ss)
+            // ctx.body = ss
+
+            const r = await User.registerByEmail({
+                email: 'cs_victor@126.com',
+                password: '123456'
+            })
+
+            ctx.body = r
 
         })
-        .post('/register', async(ctx) => {})
-        .get('/login', async(ctx) => {
+        .post('/register', async(ctx) => {
 
-            const username = ctx.query.username
-            const email = ctx.query.email
-            const password = ctx.query.password
+            const username = ctx.request.body.username
+            const email = ctx.request.body.email
+            const password = ctx.request.body.password
+
+            let user
+
+            if (email) {
+                user = await User.registerByEmail({
+                    email,
+                    password
+                })
+            }
+
+            if (username) {
+                user = await User.registerByEmail({
+                    username,
+                    password
+                })
+            }
+
+            if (user) {
+                ctx.session.user = user
+                ctx.session.role = 'user'
+                ctx.spResponse(200, user, '注册成功。')
+            } else {
+                ctx.spResponse(200, {}, '注册失败。')
+            }
+
+        })
+        .post('/login', async(ctx) => {
+
+            const username = ctx.request.body.username
+            const email = ctx.request.body.email
+            const password = ctx.request.body.password
 
             //
             let user
@@ -49,13 +86,13 @@ const createRouter = (rootRouter) => {
             // 登录成功
             if (user) {
                 ctx.session.user = user
+                ctx.session.role = 'user'
 
-                console.log(ctx.session)
                 ctx.spResponse(200, user, '登录成功。')
             }
 
         })
-        .post('/login', async(ctx) => {
+        .get('/login', async(ctx) => {
 
         })
         .get('/forgot', async(ctx) => {
