@@ -53,7 +53,7 @@ const createRouter = (rootRouter) => {
                 ctx.session.role = 'user'
                 ctx.spResponse(200, user, '注册成功。')
             } else {
-                ctx.spResponse(200, {}, '注册失败。')
+                ctx.spResponse(201, {}, '注册失败。')
             }
 
         })
@@ -70,17 +70,17 @@ const createRouter = (rootRouter) => {
 
             // 无可用登录信息
             if (user === undefined) {
-                ctx.spResponse(200, {}, '提供登录信息有误。')
+                ctx.spResponse(203, {}, '提供登录信息有误。')
             }
 
             // 没找到登录用户
             if (user === null) {
-                ctx.spResponse(200, {}, '没找到登录用户。')
+                ctx.spResponse(201, {}, '没找到登录用户。')
             }
 
             // 密码错误
             if (user === false) {
-                ctx.spResponse(200, {}, '密码错误。')
+                ctx.spResponse(202, {}, '密码错误。')
             }
 
             // 登录成功
