@@ -95,6 +95,22 @@ const createRouter = (rootRouter) => {
         .get('/login', async(ctx) => {
 
         })
+        .get('/logout', async(ctx) => {
+
+            if (ctx.session.user) {
+                ctx.session.user = undefined
+                ctx.session.role = undefined
+
+                ctx.spResponse(200, {}, '登录已退出。')
+            } else {
+                ctx.session.user = undefined
+                ctx.session.role = undefined
+
+                ctx.spResponse(201, {}, '无登录用户。')
+            }
+
+
+        })
         .get('/forgot', async(ctx) => {
 
         })
