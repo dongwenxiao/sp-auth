@@ -15,7 +15,9 @@ export default function authMiddlewareCreate(rootRouter) {
             '/auth/admin/role/get',
             '/auth/admin/role/add',
             '/auth/admin/role/update',
-            '/auth/admin/role/delete'
+            '/auth/admin/role/delete',
+            '/auth/login',
+            '/auth/register'
         ].indexOf(url)) {
             return await next()
         }
