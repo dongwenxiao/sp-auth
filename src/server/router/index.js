@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 import User from '../models/User'
-// import _ from 'underscore'
+import { RES_SUCCESS, RES_FAIL_NON_EXIST, RES_FAIL_OPERATE, RES_FAIL_STORAGE, RES_FAIL_PARAM } from 'sp-response'
 import { createRouter as createAdminRouter } from './admin'
 
 const createRouter = (rootRouter) => {
@@ -13,7 +13,7 @@ const createRouter = (rootRouter) => {
     router
         .get('/register', async(ctx) => {
 
-            // var ss = ctx.spResponse(200, { a: 1 }, 'sss')
+            // var ss = ctx.spResponse(RES_SUCCESS, { a: 1 }, 'sss')
 
             // console.log(ss)
             // ctx.body = ss
@@ -51,9 +51,9 @@ const createRouter = (rootRouter) => {
             if (user) {
                 ctx.session.user = user
                 ctx.session.role = 'user'
-                ctx.spResponse(200, user, '注册成功。')
+                ctx.spResponse(RES_SUCCESS, user, '注册成功。')
             } else {
-                ctx.spResponse(201, {}, '注册失败。')
+                ctx.spResponse(RES_FAIL_OPERATE, {}, '注册失败。')
             }
 
         })
@@ -70,17 +70,17 @@ const createRouter = (rootRouter) => {
 
             // 无可用登录信息
             if (user === undefined) {
-                ctx.spResponse(203, {}, '提供登录信息有误。')
+                ctx.spResponse(RES_FAIL_STORAGE, {}, '提供登录信息有误。')
             }
 
             // 没找到登录用户
             if (user === null) {
-                ctx.spResponse(201, {}, '没找到登录用户。')
+                ctx.spResponse(RES_FAIL_NON_EXIST, {}, '没找到登录用户。')
             }
 
             // 密码错误
             if (user === false) {
-                ctx.spResponse(202, {}, '密码错误。')
+                ctx.spResponse(RES_FAIL_PARAM, {}, '密码错误。')
             }
 
             // 登录成功
@@ -88,7 +88,7 @@ const createRouter = (rootRouter) => {
                 ctx.session.user = user
                 ctx.session.role = 'user'
 
-                ctx.spResponse(200, user, '登录成功。')
+                ctx.spResponse(RES_SUCCESS, user, '登录成功。')
             }
 
         })
@@ -101,12 +101,12 @@ const createRouter = (rootRouter) => {
                 ctx.session.user = undefined
                 ctx.session.role = undefined
 
-                ctx.spResponse(200, {}, '登录已退出。')
+                ctx.spResponse(RES_SUCCESS, {}, '登录已退出。')
             } else {
                 ctx.session.user = undefined
                 ctx.session.role = undefined
 
-                ctx.spResponse(201, {}, '无登录用户。')
+                ctx.spResponse(RES_FAIL_NON_EXIST, {}, '无登录用户。')
             }
 
 

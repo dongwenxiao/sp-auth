@@ -1,9 +1,15 @@
-import { spMongoDB } from 'sp-mongo'
 import Router from 'koa-router'
+import { spResponse } from 'sp-response'
+import { spMongoDB } from 'sp-mongo'
 import { createRouter } from './server/router'
 import authMiddlewareCreate from './authMiddlewareCreate'
 import Role from './server/models/Role'
 import User from './server/models/User'
+
+// 表名
+const USER_COLLECTION_NAME = '__sp_user'
+const ROLE_COLLECTION_NAME = '__sp_role'
+
 
 export default class spApi {
 
@@ -47,10 +53,10 @@ export default class spApi {
         this.router = createRouter(this.rootRouter)
 
         // 配置数据库连接对象和表名
-        Role.configDAO(this.dao)
-        Role.configCollection('role')
         User.configDAO(this.dao)
-        User.configCollection('user')
+        User.configCollection(USER_COLLECTION_NAME)
+        Role.configDAO(this.dao)
+        Role.configCollection(ROLE_COLLECTION_NAME)
 
         // handbars 模板注册
         const views = require('sp-koa-views')
@@ -69,6 +75,7 @@ export default class spApi {
         // 挂载prefix路由
 
         const apiRouter = new Router()
+        apiRouter.use(spResponse)
         apiRouter.use(this.urlPrefix, this.router.routes(), this.router.allowedMethods())
         this.rootRouter.use(apiRouter)
 
