@@ -21,7 +21,7 @@
     },
     "homepage": "https://github.com/dongwenxiao/sp-auth#readme",
     "dependencies": {
-        "sp-model": "latest",
-        "sp-koa-views": "latest"
+        "sp-functions": "^2.1.0",
+        "sp-model": "^2.3.0"
     }
 }
