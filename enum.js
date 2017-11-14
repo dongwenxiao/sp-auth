@@ -28,8 +28,21 @@ module.exports = {
      */
     LOGIN_RESULT: {
         SUCCESS: 1, // 成功
-        
+
         EXPIRED: 2, // 过期
         DISABLED: 3, // 禁用
+    },
+
+
+    /**
+     * ACL 验证结果（中间件处理时候使用）
+     */
+    ACL_VERIFY: {
+        PASS: 'PASS', // 验证通过
+        FORBIDDEN: 'FORBIDDEN', // 无权限访问
+        DISABLED: 'DISABLED', // 用户被禁用
+        NO_ACCESS_TOKEN: 'NO_ACCESS_TOKEN', // 没有access_token
+        USER_NOT_EXIST: 'USER_NOT_EXIST' // 用户不存在
     }
+
 }

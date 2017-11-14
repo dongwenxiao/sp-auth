@@ -1,74 +1,44 @@
+const { ACL_VERIFY } = require('../enum')
+const service = require('../service')
+
 /**
  * 生成ACL中间件
  * 
  * opt.getUser(access_key)  // 通过access_key获取用户信息
  */
-const factoryACLMiddleware = function(acl, opt) {
-
-    // 
-    if (!opt) new Error('factoryACLMiddleware(acl, opt): opt must be objcet!')
-    if (!opt.getUser) new Error('opt.getUser must be function!')
+const factoryACLMiddleware = function(acl) {
 
     return async(ctx, next) => {
 
-        /* 
-        ACL 处理流程:
-        check_anyone_url -> check_access_key -> check_role_url
-        */
+        //
+        let url = ctx.path
+        let method = ctx.method
+        let accessToken = ctx.header.access_token
 
-        const url = ctx.path
-        const method = ctx.method
+        //
+        let verify = service.verifyACL({ acl, url, method, accessToken })
 
-        // =>
-        if (isAnyone(url, method)) {
-            await next()
-            return
-        }
+        //
+        if (verify.code === ACL_VERIFY.PASS) {
+            if (!verify.user) return await next()
+            else {
+                ctx.user = verify.user
+                await next()
 
-        const accessKey = ctx.header.access_key
-
-        // => 
-        if (!accessKey) {
+                // 释放
+                delete ctx.user
+            }
+        } else if (verify.code === ACL_VERIFY.FORBIDDEN ||
+            verify.code === ACL_VERIFY.NO_ACCESS_TOKEN ||
+            verify.code === ACL_VERIFY.DISABLED ||
+            verify.code === ACL_VERIFY.USER_NOT_EXIST
+        ) {
             ctx.status = 403
             return
         }
 
-        const user = opt.getUser(accessKey)
-
-        // =>
-        if (!user) {
-            ctx.status = 403
-            return
-        }
-
-        // =>
-        if (!verify(user.role, url, method)) {
-            ctx.status = 403
-            return
-        }
-
-
-        // 带上用户信息
-        // =>
-        ctx.user = user
-        await next()
-
-        // 释放
-        delete ctx.user
-
     }
 
-    // acl 检查
-    function verify(role, url, method) {
-        if (~acl[role].indexOf(`${url}|${method}`))
-            return true
-        return false
-    }
-
-    // 判断是否是任何人可以访问的url
-    function isAnyone(url, method) {
-        return verify('anyone', url, method)
-    }
 }
 
 module.exports = factoryACLMiddleware
