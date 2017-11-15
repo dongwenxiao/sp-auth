@@ -29,15 +29,16 @@ export default class AuthService {
     async login(userId) {
 
         // 返回数据格式
-        const result = (code, token) => {
+        const result = (code, token, expire) => {
             return {
                 code: code || LOGIN_RESULT.SUCCESS,
-                accessToken: token || ''
+                accessToken: token || '',
+                expire: expire || 0
             }
         }
 
         // 获取用户信息
-        let user = await this.userModel.getUserById(userId)
+        let user = await this.userModel.getOneById(userId)
 
         if (!user) {
             return result(LOGIN_RESULT.NOT_EXIST)
@@ -49,14 +50,14 @@ export default class AuthService {
 
         // upsert(插入或更新)用户的access_token
         const accessToken = {
-            user_id: userId,
+            userId,
             token: `${md5(moment().format('X'))}.${randomString(10)}`,
             expire: moment().add(1, 'days').format("X")
         }
         await this.userAccessTokenModel.upsert(accessToken)
 
         // => accessToken
-        return result(LOGIN_RESULT.SUCCESS, accessToken.token)
+        return result(LOGIN_RESULT.SUCCESS, accessToken.token, accessToken.expire)
     }
 
     /**
@@ -75,7 +76,7 @@ export default class AuthService {
             status
         }
 
-        user.id = this.userModel.create(user)
+        user.id = await this.userModel.create(user)
 
         return user
     }

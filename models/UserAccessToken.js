@@ -19,6 +19,7 @@ export default class UserAccessToken extends spModel {
                 ( ${userId} , '${token}' , ${expire} , ${create_time} , ${update_time} )
             ON DUPLICATE KEY UPDATE
                 token = '${token}',
+                \`expire\` = ${expire},
                 update_time = ${update_time}
         `
 
