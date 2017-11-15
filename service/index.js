@@ -2,8 +2,10 @@ const { ACL_VERIFY, LOGIN_RESULT, USER_STATUS, ROLE } = require('../enum')
 const md5 = require('sp-functions/crypto/md5')
 const randomString = require('sp-functions/random/string')
 const moment = require('moment')
+const log = require('debug')('sp-auth:log')
+const error = require('debug')('sp-auth:error')
 
-export default class authService {
+export default class AuthService {
 
     /**
      * 注入数据操作对象
@@ -36,6 +38,10 @@ export default class authService {
 
         // 获取用户信息
         let user = await this.userModel.getUserById(userId)
+
+        if (!user) {
+            return result(LOGIN_RESULT.NOT_EXIST)
+        }
 
         // 判断用户是否可用
         if (user.status == USER_STATUS.DISABLE)
@@ -86,7 +92,7 @@ export default class authService {
      */
     async verifyACL({ acl, url, method, accessToken }) {
 
-        const result = (code, user) => {
+        const result = (status, user) => {
             return {
                 status,
                 user
@@ -95,7 +101,7 @@ export default class authService {
 
         // 1. 判断URL是否随便访问
 
-        if (this.isAnyone(url, method)) {
+        if (this.isAnyone(acl, url, method)) {
             return result(ACL_VERIFY.PASS, null)
         }
 
@@ -125,13 +131,25 @@ export default class authService {
     }
 
     verify(acl, role, url, method) {
-        if (~acl[role].indexOf(`${url}|${method}`) || // 匹配具体Method
-            ~acl[role].indexOf(`${url}|all`)) // 匹配all Method
+
+        log('acl: %o', acl)
+        log('role: %o', role)
+        log('url: %o', url)
+        log('method: %o', method)
+        log('acl[role]: %o', acl[role])
+
+        if (!acl[role]) {
+            error('ACL里没有找到对应的Role: %o', role)
+            return false
+        }
+
+        if (~acl[role].indexOf(`${url}|${method}`.toLowerCase()) || // 匹配具体 Method
+            ~acl[role].indexOf(`${url}|all`.toLowerCase())) // 匹配 all Method
             return true
         return false
     }
 
-    isAnyone(url, method) {
-        return this.verify(ROLE.ANYONE, url, method)
+    isAnyone(acl, url, method) {
+        return this.verify(acl, ROLE.ANYONE, url, method)
     }
 }

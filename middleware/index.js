@@ -1,25 +1,27 @@
 const { ACL_VERIFY } = require('../enum')
-const service = require('../service')
+const log = require('debug')('sp-auth:log')
 
 /**
  * 生成ACL中间件
  * 
  * opt.getUser(access_key)  // 通过access_key获取用户信息
  */
-const factoryACLMiddleware = function(acl) {
+const factoryACLMiddleware = function(acl, service) {
 
     return async(ctx, next) => {
 
         //
         let url = ctx.path
         let method = ctx.method
+        
         let accessToken = ctx.header.access_token
 
         //
-        let verify = service.verifyACL({ acl, url, method, accessToken })
-
+        let verify = await service.verifyACL({ acl, url, method, accessToken })
+        log('verify result: %O', verify)
+        
         //
-        if (verify.code === ACL_VERIFY.PASS) {
+        if (verify.status === ACL_VERIFY.PASS) {
             if (!verify.user) return await next()
             else {
                 ctx.user = verify.user
@@ -28,13 +30,12 @@ const factoryACLMiddleware = function(acl) {
                 // 释放
                 delete ctx.user
             }
-        } else if (verify.code === ACL_VERIFY.FORBIDDEN ||
-            verify.code === ACL_VERIFY.NO_ACCESS_TOKEN ||
-            verify.code === ACL_VERIFY.DISABLED ||
-            verify.code === ACL_VERIFY.USER_NOT_EXIST
+        } else if (verify.status === ACL_VERIFY.FORBIDDEN ||
+            verify.status === ACL_VERIFY.NO_ACCESS_TOKEN ||
+            verify.status === ACL_VERIFY.DISABLED ||
+            verify.status === ACL_VERIFY.USER_NOT_EXIST
         ) {
             ctx.status = 403
-            return
         }
 
     }

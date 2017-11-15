@@ -1,6 +1,7 @@
 const service = require('../service')
 
 module.exports = require('koa-router')
+
     .post('/login', async(ctx) => {
 
         let userId = ctx.query.userId

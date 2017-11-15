@@ -31,6 +31,8 @@ module.exports = {
 
         EXPIRED: 2, // 过期
         DISABLED: 3, // 禁用
+
+        NOT_EXIST: 4 // 不存在
     },
 
 
