@@ -69,11 +69,12 @@ export default class AuthService {
      * @param {Object} {role, status} 
      * @returns {User} 包含了用户id的user对象
      */
-    async register({ role, status }) {
+    async register({ role, status, from }) {
 
         let user = {
             role,
-            status
+            status,
+            from
         }
 
         user.id = await this.userModel.create(user)

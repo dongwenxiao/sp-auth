@@ -11,7 +11,7 @@ export default class User extends spModel {
     async getUserByAccessToken(accessToken) {
 
         let sql = `
-            SELECT b.id AS id, b.status, b.role, b.create_time, b.update_time
+            SELECT b.id AS id, b.status, b.role, b.from, b.create_time, b.update_time
             FROM dt_user_access_token a
             LEFT JOIN dt_user b 
             ON a.user_id = b.id

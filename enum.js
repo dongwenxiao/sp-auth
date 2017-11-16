@@ -45,6 +45,19 @@ module.exports = {
         DISABLED: 'DISABLED', // 用户被禁用
         NO_ACCESS_TOKEN: 'NO_ACCESS_TOKEN', // 没有access_token
         USER_NOT_EXIST: 'USER_NOT_EXIST' // 用户不存在
+    },
+
+    /**
+     * 用户是从哪里注册过了的
+     */
+    REGISTER_FROM: {
+        WX: 'wechat', // 微信
+        QQ: 'qq', // QQ
+        PHONE: 'phone', // 手机号
+        EMAIL: 'email', // 邮箱
+        WEIBO: 'weibo', // 新浪微博
+        GITHUB: 'github', // Github
+        FACEBOOK: 'facebook' // Facebook
     }
 
 }
