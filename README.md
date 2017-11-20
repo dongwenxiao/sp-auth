@@ -7,6 +7,7 @@
 
 ## 挂载middleware
 ```js
+const acl = require('sp-auth/middleware')
 const config = require('./config')
 app.use(acl(config.acl, instance.authService))
 ```
