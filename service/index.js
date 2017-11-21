@@ -1,6 +1,7 @@
 const { ACL_VERIFY, LOGIN_RESULT, USER_STATUS, ROLE } = require('../enum')
 const md5 = require('sp-functions/crypto/md5')
 const randomString = require('sp-functions/random/string')
+const is = require('sp-functions/is')
 const moment = require('moment')
 const log = require('debug')('sp-auth:log')
 const error = require('debug')('sp-auth:error')
@@ -132,25 +133,88 @@ export default class AuthService {
 
     }
 
+    // verify(acl, role, url, method) {
+
+    //     log('acl: %o', acl)
+    //     log('role: %o', role)
+    //     log('url: %o', url)
+    //     log('method: %o', method)
+    //     log('acl[role]: %o', acl[role])
+
+    //     if (!acl[role]) {
+    //         error('ACL里没有找到对应的Role: %o', role)
+    //         return false
+    //     }
+
+    //     if (~acl[role].indexOf(`${url}|${method}`.toLowerCase()) || // 匹配具体 Method
+    //         ~acl[role].indexOf(`${url}|all`.toLowerCase())) // 匹配 all Method
+    //         return true
+    //     return false
+    // }
+
     verify(acl, role, url, method) {
 
-        log('acl: %o', acl)
-        log('role: %o', role)
-        log('url: %o', url)
-        log('method: %o', method)
-        log('acl[role]: %o', acl[role])
+        let roleAcl = acl[role]
 
-        if (!acl[role]) {
+        if (!roleAcl) {
             error('ACL里没有找到对应的Role: %o', role)
             return false
         }
 
-        if (~acl[role].indexOf(`${url}|${method}`.toLowerCase()) || // 匹配具体 Method
-            ~acl[role].indexOf(`${url}|all`.toLowerCase())) // 匹配 all Method
-            return true
+        for (let i = 0; i < roleAcl.length; i++) {
+
+            let rule = roleAcl[i].split('|')
+            let urlRule = rule[0]
+            let methodRule = rule[1]
+
+            let urlFlag = false
+            let methodFlag = false
+
+            // url 通配符 *
+            if (is.include(urlRule, '*')) {
+                urlFlag = this.validUrl(urlRule, url)
+            } else {
+                if (this.validEqual(urlRule, url)) urlFlag = true
+            }
+
+            // method 通配符 *
+            if (is.include(methodRule, '*')) {
+                methodFlag = true
+            } else {
+                if (this.validEqual(methodRule, method)) methodFlag = true
+
+            }
+
+            //
+            if (urlFlag && methodFlag) return true
+        }
+
         return false
     }
 
+    validUrl(rule, url) {
+        let pattern = '^' + rule.replace(/\//g, '\\/').replace(/\*/g, '.*')
+        let regx = new RegExp(pattern)
+        let pass = regx.test(url)
+        return pass
+    }
+
+    /**
+     * 把两个字符串变成小写字母，再比较是否相等
+     * @param {String} a 
+     * @param {String} b 
+     * @returns {Boolean} true 相等，false 不等
+     */
+    validEqual(a, b) {
+        return is.equal(a.toLowerCase(), b.toLowerCase())
+    }
+
+    /**
+     * 验证是否是随便访问的
+     * @param {*} acl 
+     * @param {*} url 
+     * @param {*} method 
+     */
     isAnyone(acl, url, method) {
         return this.verify(acl, ROLE.ANYONE, url, method)
     }
