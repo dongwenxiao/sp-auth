@@ -3,14 +3,14 @@
 
 module.exports = {
     ANYONE: [
-        '/login|all',
+        '/login|*',
         '/register|get',
         '/register|post',
         '/forget|get'
     ],
     ADMIN: [
-        '/dashboard|all',
-        '/report|all',
+        '/dashboard|*',
+        '/report|*',
         '/account/*|get'
     ]
 }
