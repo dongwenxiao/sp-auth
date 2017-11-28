@@ -3,14 +3,13 @@ const md5 = require('sp-functions/crypto/md5')
 const randomString = require('sp-functions/random/string')
 const is = require('sp-functions/is')
 const moment = require('moment')
-const log = require('debug')('sp-auth:log')
+
 const error = require('debug')('sp-auth:error')
 
 export default class AuthService {
 
     /**
      * 注入数据操作对象
-     * @param {*} param0 
      */
     inject({ userModel, userAccessTokenModel }) {
         this.userModel = userModel
@@ -132,25 +131,6 @@ export default class AuthService {
         return result(ACL_VERIFY.PASS, user)
 
     }
-
-    // verify(acl, role, url, method) {
-
-    //     log('acl: %o', acl)
-    //     log('role: %o', role)
-    //     log('url: %o', url)
-    //     log('method: %o', method)
-    //     log('acl[role]: %o', acl[role])
-
-    //     if (!acl[role]) {
-    //         error('ACL里没有找到对应的Role: %o', role)
-    //         return false
-    //     }
-
-    //     if (~acl[role].indexOf(`${url}|${method}`.toLowerCase()) || // 匹配具体 Method
-    //         ~acl[role].indexOf(`${url}|all`.toLowerCase())) // 匹配 all Method
-    //         return true
-    //     return false
-    // }
 
     verify(acl, role, url, method) {
 
